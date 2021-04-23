@@ -1,0 +1,17 @@
+# ROM and VGA BIOS images ---------------------------------------------
+#0xf0000 
+#address=0x00000000
+romimage: file="/usr/share/bochs/BIOS-bochs-latest", address=0x00000, options=none
+vgaromimage: file="/usr/share/bochs/VGABIOS-lgpl-latest"
+#romimage:    file=BIOS-bochs-latest, address=0xf0000 
+#vgaromimage: VGABIOS-lgpl-latest
+ 
+# boot from floppy using our disk image -------------------------------
+ata0-master: type=disk, path="disco.img", mode=flat #, cylinders=80, heads=2, spt=36
+#floppya: image="disco.img", status=inserted # Boot from drive A
+boot: disk
+# logging and reporting -----------------------------------------------
+ 
+log:         OSDev.log             # All errors and info logs will output to OSDev.log
+error:       action=report 
+info:        action=report

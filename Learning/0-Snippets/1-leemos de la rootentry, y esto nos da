@@ -1,0 +1,4 @@
+1-leemos de la rootentry, y esto nos da el valor 7.
+2-hay que cargar el secor Data + 7
+3-leer de la fat la posicion 7, y comproabr si es Fin de fichero o no
+4-si no es fin de fichero, ir a paso 2

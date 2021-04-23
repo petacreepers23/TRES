@@ -1,0 +1,33 @@
+; estructura HBA_MEM
+HBA_MEM:    
+cap db 0x00
+ghc db 0x04
+is db 0x08
+pi db 0x0C
+vs db 0x10
+ccc_ctl db 0x14
+ccc_pts db 0x18
+em_loc db 0x1C
+em_ctl db 0x20
+cap2 db 0x24
+bohc db 0x28
+
+
+detectAHCI
+
+SATA_SIG_ATA db	0x00000101	;  SATA drive
+SATA_SIG_ATAPI db	0xEB140101	// SATAPI drive
+SATA_SIG_SEMB	db 0xC33C0101	// Enclosure management bridge
+SATA_SIG_PM db	0x96690101	// Port multiplier
+AHCI_DEV_NULL  db 0
+AHCI_DEV_SATA db 1
+AHCI_DEV_SEMB db 2
+AHCI_DEV_PM db 3
+AHCI_DEV_SATAPI db 4
+HBA_PORT_IPM_ACTIVE db 1
+HBA_PORT_DET_PRESENT db 3
+
+loop_dahcpi
+cmp ah,0x20 ; hay 32 puertos, los checkeamos para saber en cual.
+inc ah
+

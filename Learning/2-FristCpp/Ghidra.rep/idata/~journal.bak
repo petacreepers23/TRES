@@ -1,0 +1,3 @@
+IMV:/kernel.bin:/kernel.bin.64
+IADD:00000007:/kernel.bin
+IDSET:/kernel.bin:c0a8381681e13163719250100
