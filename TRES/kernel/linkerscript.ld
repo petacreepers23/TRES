@@ -16,11 +16,14 @@ SECTIONS {
 	.rodata (0x10100) : {
 		./build/kernel_main.o (.rodata)
 	} > RAM
-	.note.gnu.property (0x10150) : {
+	.note.gnu.property (0x10200) : {
 		./build/kernel_main.o (.note.gnu.property)
 	} > RAM
-	.functs (0x10200) : {
+	.functs (0x10300) : {
 		./build/kernel_functions.o (.text)
+	} > RAM
+	.functs (0x10500) : {
+		./build/pci.o (.text)
 	} > RAM
 	
 	

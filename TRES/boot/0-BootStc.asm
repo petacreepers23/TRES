@@ -28,7 +28,7 @@ bootinfo: ;La tabla que hay que poner, descrita en el 8
   iFatCnt:       db  2             ; #of FAT copies
   iRootSize:     dw  224           ; size of root directory ENTRYS
   iTotalSect:    dw  5040;5760          ; total # of sectors if over 32 MB ; --> small ;4400
-  iMedia:        db  0xF0          ; media Descriptor ;F8
+  iMedia:        db  0xF0;0xF8          ; media Descriptor ;F8
   iFatSize:      dw  23             ; size of each FAT
   iTrackSect:    dw  63;36             ; sectors per track
   iHeadCnt:      dw  16;2             ; number of read-write heads
@@ -53,7 +53,7 @@ start:
         ; The following line encodes a "xor ax, ax" (but it's not the only way to encode it, so we can't just write that instruction here).
         db 0x33; .byte HEX(33), HEX(C0)
 		cli
-		mov byte [iBootDrive], 80h ;NUEVA LINEA -> Debería ser 0 (Disco del q booteamos, por eso no lo poniamos antes pero puede dar problemas si no lo ponemos, esta linea guarda el disco del que booteamos a nuestra estructura de datos)
+		;mov byte [iBootDrive], dl ; En algunas bios te modifica el dl y en otras te modifica el bpb y hay sopresas
 		mov ax, 7C0h  ;Creamos DS
 		mov ds, ax
 		;..
@@ -163,14 +163,14 @@ leerNSector:
 
         mov ah, 02h  ;mas documentacion en 2-CargaSector2.asm        
     	;mov al, 0x01 ; ELIMINAR LUEGO. SOLO PERRMITE CARGAR UN sector cada vez
-		mov dl, 80h;[iBootDrive]     
+		mov dl, [iBootDrive];80h;[iBootDrive]     
     	mov bx, 7C0h  ;si ponemos un 0 aqui, la liamos muy fuertemente
     	mov es, bx    ;es <- 7C0h y en bx hace un pop para tener la dir 8000h
     	pop bx ;;el del principio
 .lectura:
     	int 0x13       							; interupcion del DISCO de la BIOS
 		;jc .lectura
-		; TODO: poner un contador, hay que reintentar o eventualmente fallara 1 hora pa ver que aquí fallaba
+		; TODO: poner un contador, hay que reintentar o en un futuro fallara 1 hora pa ver que aquí fallaba
 		jc falloDisco							; si falla, no reintenter
 		retw
 ;---------------------------------------------------------------------------------------------

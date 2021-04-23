@@ -1,21 +1,21 @@
-·ola Direccion: 0xC0000008 Devuelve:  0x00000000 Direccion: 0xC0800008 Devuelve:
-  0xDFDFDFDF Direccion: 0xC0010008 Devuelve:  0xDFDFDFDF Direccion: 0xC0810008 D
-evuelve:  0xDFDFDFDF Direccion: 0xC0020008 Devuelve:  0xDFDFDFDF Direccion: 0xC0
-820008 Devuelve:  0xDFDFDFDF Direccion: 0xC0030008 Devuelve:  0xDFDFDFDF Direcci
-on: 0xC0830008 Devuelve:  0xDFDFDFDF Direccion: 0xC0040008 Devuelve:  0xDFDFDFDF
- Direccion: 0xC0840008 Devuelve:  0xDFDFDFDF Direccion: 0xC0050008 Devuelve:  0x
-DFDFDFDF Direccion: 0xC0850008 Devuelve:  0xDFDFDFDF Direccion: 0xC0060008 Devue
-lve:  0xDFDFDFDF Direccion: 0xC0860008 Devuelve:  0xDFDFDFDF Direccion: 0xC00700
-08 Devuelve:  0xDFDFDFDF Direccion: 0xC0870008 Devuelve:  0xDFDFDFDF Direccion:
-0xC0080008 Devuelve:  0xDFDFDFDF Direccion: 0xC0880008 Devuelve:  0xDFDFDFDF Dir
-eccion: 0xC0090008 Devuelve:  0xDFDFDFDF Direccion: 0xC0890008 Devuelve:  0xDFDF
-DFDF Direccion: 0xC00A0008 Devuelve:  0xDFDFDFDF Direccion: 0xC08A0008 Devuelve:
-  0xDFDFDFDF Direccion: 0xC00B0008 Devuelve:  0xDFDFDFDF Direccion: 0xC08B0008 D
-evuelve:  0xDFDFDFDF Direccion: 0xC00C0008 Devuelve:  0xDFDFDFDF Direccion: 0xC0
-8C0008 Devuelve:  0xDFDFDFDF Direccion: 0xC00D0008 Devuelve:  0xDFDFDFDF Direcci
-on: 0xC08D0008 Devuelve:  0xDFDFDFDF Direccion: 0xC00E0008 Devuelve:  0xDFDFDFDF
- Direccion: 0xC08E0008 Devuelve:  0xDFDFDFDF Direccion: 0xC00F0008 Devuelve:  0x
-DFDFDFDF Direccion: 0xC08F0008 Devuelve:  0xDFDFDFDF
+½us 0x00000000 Dev 0x00000000 Fun 0x00000000 Cla 0x40000000 Sub 0x00000000 ----
+Bus 0x00000000 Dev 0x10000000 Fun 0x00000000 Cla 0x40000000 Sub 0x10000000 ----
+Bus 0x00000000 Dev 0x10000000 Fun 0x10000000 Cla 0x10000000 Sub 0x10000000 ----
+Bus 0x00000000 Dev 0x10000000 Fun 0x00000000 Cla 0xC0000000 Sub 0x10000000 ----
+Bus 0x00000000 Dev 0x10000000 Fun 0x10000000 Cla 0x40000000 Sub 0x08000000 ----
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

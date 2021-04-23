@@ -1,5 +1,7 @@
-#include "memory.h"
-#include "types.h"
+#include "../lib/memory.hpp"
+#include "../lib/types.hpp"
+#include "driver_base.hpp"
+
 
 namespace tres::drivers {
 
@@ -26,7 +28,7 @@ namespace tres::drivers {
 
 		void clean_console() {
 			for (size_t i = 0; i < VIDEO_SIZE; ++i) {
-				VIDEO_MEM[i] = 0;
+				tres::VIDEO_MEM[i] = 0;
 			}
 		}
 
@@ -51,5 +53,5 @@ namespace tres::drivers {
 
 	private:
 		byte color = 15;
-	}
-}
+	};
+};

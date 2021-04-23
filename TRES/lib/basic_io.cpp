@@ -1,4 +1,6 @@
-#include "types.h"
+#include "types.hpp"
+#include "basic_io.hpp"
+#include "../drivers/console_driver.hpp"
 
 namespace tres {
 	console::console() {

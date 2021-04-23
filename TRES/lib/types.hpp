@@ -4,5 +4,5 @@ namespace tres {
 
 	typedef unsigned char byte;
 
-	const void* null = 0x0;
+	void* null = 0x0;
 }

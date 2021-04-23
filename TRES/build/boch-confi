@@ -7,7 +7,7 @@ vgaromimage: file="/usr/share/bochs/VGABIOS-lgpl-latest"
 #vgaromimage: VGABIOS-lgpl-latest
  
 # boot from floppy using our disk image -------------------------------
-ata0-master: type=disk, path="disco.img", mode=flat #, cylinders=80, heads=2, spt=36
+ata0-master: type=disk, path="disco.img", mode=flat # COMENTARIO, cylinders=80, heads=2, spt=36
 #floppya: image="disco.img", status=inserted # Boot from drive A
 boot: disk
 # logging and reporting -----------------------------------------------
