@@ -27,7 +27,7 @@ compile:
 	$(CC) $(CCFLAGS) $(SOURCE_MAIN).cpp -o $(OUT_1).o
 	$(CC) $(CCFLAGS) $(SOURCE_FUNC).cpp -o $(OUT_2).o
 	$(CC) $(CCFLAGS) $(DRIVER_PATH)$(SOURCE_DRIVER).cpp -o $(OUT_3).o
-	$(CC) $(CCFLAGS) $(LIB_PATH)$(SOURCE_ALLOCATOR).cpp -o $(OUT_3).o
+	$(CC) $(CCFLAGS) $(LIB_PATH)$(SOURCE_ALLOCATOR).cpp -o $(OUT_4).o
 	$(LN) $(LNFLAGS) -o $(DEST_DIR)$(KERNEL_NAME).BIN
 
 all: clean compile
