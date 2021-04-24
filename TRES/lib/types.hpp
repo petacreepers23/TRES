@@ -1,3 +1,4 @@
+#pragma once
 namespace tres {
 
 	typedef unsigned long size_t;

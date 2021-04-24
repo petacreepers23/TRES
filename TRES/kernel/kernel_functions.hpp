@@ -1,3 +1,4 @@
+#pragma once
 void print(char *,unsigned int);
 void stop();
 unsigned int get_PCI_register(int bus, int slot, int func, int reg);

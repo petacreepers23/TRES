@@ -1,10 +1,11 @@
-#include "types.h"
-#include "memory.h"
+#pragma once
+#include "types.hpp"
+#include "memory.hpp"
 
 namespace tres {
 
 	//No segmented nor paginated mode allocator
-	static class basic_allocator {
+	class basic_allocator {
 		//TODO: with tres::string store an id of a pointer
 		//so it can be shared between pointers.
 		//TODO: protect from exceeding the pretended size,
@@ -22,18 +23,17 @@ namespace tres {
 	private:
 		struct Cell {
 			void* pointer = tres::null;
-			size_t size = tres::null;
+			size_t size = 0;
 		};
 		//structure of kernel memory:
 			//----: pointer
 			//----: size of it
 		//one for each address and some margin
-		const max_allocated_pointers = 
-			(tres::KERNEL_MEM / sizeof(Cell)) - sizeof(Cell);
+		//const max_allocated_pointers = (tres::KERNEL_MEM / sizeof(Cell)) - sizeof(Cell);
 
-		size_t allocated_pointers = 0;
+		//size_t allocated_pointers = 0;
 
-		void* find_a_suitable_place(size_t s);
-	}
+		//void* find_a_suitable_place(size_t s);
+	};
 
 };
