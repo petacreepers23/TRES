@@ -25,6 +25,11 @@ int main() {
     // } else {
     //    print((char*)"big-endian",10);
     // }
-	ls_pci();
+	
+	// ls_pci();
+	print_pci();
+
+	// print("otro print",10);
+	// print("y otro mas",10);
 	stop();
 }

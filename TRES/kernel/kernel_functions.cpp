@@ -1,7 +1,8 @@
 
 #include "kernel_functions.hpp"
 static int dir_memoria_video = 0xB8000;
-void print(char* msg, unsigned int size) {
+
+void print(const char* msg, unsigned int size) {
 	volatile char* mem_video = (volatile char*)dir_memoria_video;
 
 	for (unsigned int i = 0; i < size; ++i) {
@@ -11,9 +12,27 @@ void print(char* msg, unsigned int size) {
 	mem_video[size * 2] = ' ';
 	mem_video[size * 2 + 1]  = (char)15;
 	dir_memoria_video+=size*2 + 2;
-
-
 }
+
+
+void simple_print(const char* msg){
+	volatile char* mem_video = (volatile char*)dir_memoria_video;
+	int index = 0;
+	while(*msg != 0){
+	    *mem_video++ = *msg++;
+		*mem_video++ = 15;
+		index++;
+	}
+	dir_memoria_video += index*2;
+}
+void simple_print(const char* msg,char a){
+	simple_print(msg);
+	if(a=='\n'){
+		simple_print("                                                                                ");
+	}
+}
+
+
 /*Nums del 0-15*/
 char auxNumeric(unsigned char num){
   if(num>15){
@@ -49,6 +68,9 @@ void printNumeric(unsigned int num) {
 void stop(){
 	while(1);
 }
+
+
+
 
 // Cosas de la PCI
 
@@ -98,26 +120,26 @@ void ins(short port, T *dest, unsigned int count) {
 
 
 
-unsigned int get_PCI_register(int bus, int slot, int func, int reg) {
-	unsigned int dir;
-	dir = (unsigned int)((bus << 16) | (slot << 11) |
-	                 (func << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
-	print((char*)"Direccion:",10);
-	printNumeric(dir);
+// unsigned int get_PCI_register(int bus, int slot, int func, int reg) {
+// 	unsigned int dir;
+// 	dir = (unsigned int)((bus << 16) | (slot << 11) |
+// 	                 (func << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
+// 	print((char*)"Direccion:",10);
+// 	printNumeric(dir);
 
 
 
-	// lectura del registro
-	__asm__ __volatile__ ("outl %0,%w1": :"a" (dir), "Nd" (CONFIG_DIR));
+// 	// lectura del registro
+// 	__asm__ __volatile__ ("outl %0,%w1": :"a" (dir), "Nd" (CONFIG_DIR));
 
 
-	unsigned int * res;
-	unsigned int count =2;
-	ins(CONFIG_DAT,res,2);
+// 	unsigned int * res;
+// 	unsigned int count =2;
+// 	ins(CONFIG_DAT,res,2);
 
-	return *res;
+// 	return *res;
 	 
-}
+// }
 
 
 void set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) {
@@ -260,8 +282,8 @@ void search_device_class_in_bus(int bus, int classID) {
 		// comprobando si hay dispositivo y si es multifunción
 		// debe leer el registro PCI que contiene el tipo de cabecera
 		PCI_register = 0xC;
-		dat = get_PCI_register(bus, slot, 0, PCI_register);
-		print((char*)"Devuelve:",10);
+		//dat = get_PCI_register(bus, slot, 0, PCI_register);
+		print("Devuelve:",10);
 		printNumeric(dat);
 
 		// no hay dispositivo; paso al siguiente slot

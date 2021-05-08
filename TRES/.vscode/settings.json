@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.asm": "asm-collection",
+        "cctype": "cpp",
+        "iostream": "cpp",
+        "bitset": "cpp",
+        "iosfwd": "cpp",
+        "ostream": "cpp"
+    }
+}
