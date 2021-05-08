@@ -5,5 +5,7 @@ namespace tres {
 
 	typedef unsigned char byte;
 
+	typedef unsigned short double_byte;
+
 	void* null = 0x0;
 }
