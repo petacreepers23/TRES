@@ -18,12 +18,12 @@ namespace tres {
 		//releases a pointer
 		void deallocate(void* what);
 		//handles a change of size
-		void* reallocate(void* what, size_t new_size);
+		void* reallocate(void* what, size_t new_size, bool& successfull);
 
 	private:
 		struct Cell {
 			void* pointer = tres::null;
-			size_t size = 0;
+			byte size = 0;
 		};
 		//structure of kernel memory:
 			//----: pointer

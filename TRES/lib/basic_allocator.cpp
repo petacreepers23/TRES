@@ -45,7 +45,35 @@ void basic_allocator::deallocate(void* what) {
 	}
 }
 
-void* basic_allocator::reallocate(void* what, size_t new_size) {
+void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull) {
+	//Para reallocar, 1 necesitamos nuevo hueco donde meterlo
+	void* newplace = allocate(new_size);
+	if(newplace == tres::null){
+		successfull = false;
+		return what;
+	}
+
+	//2 Necesitamos encontrar el tamaño de los datos de antes
+	Cell* kernel_memory = (Cell*)KERNEL_MEM;
+	Cell allocation_entry;
+	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
+		if (allocation_entry.pointer == what) {
+			allocation_entry.pointer=tres::null;
+			kernel_memory[i] = allocation_entry;
+			break;
+		}
+	}
+
+	//3 Copiamos la memoria
+	for (size_t i = 0; i < allocation_entry.size; i++) {
+		static_cast<byte*>(newplace)[i] = allocation_entry.pointer[i];
+	}
+
+	//4 liberamos la antigua
+	deallocate(what);
+
+	//5 salimos
+	return newplace;
 }
 
 };  // namespace tres
