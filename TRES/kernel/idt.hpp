@@ -38,7 +38,7 @@ void idt_init() {
     idt.puntero.limite = sizeof(idt.entradas) - 1;
     idt.puntero.base = (tres::size_t*) &idt.entradas[0];
 
-    for (size_t i = 0; i < sizeof(idt.entradas); i++)
+    for (tres::size_t i = 0; i < sizeof(idt.entradas); i++)
     {
         idt_entry e = { 0, 0, 0, 0, 0 };
         idt.entradas[i] = e;

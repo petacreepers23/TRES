@@ -22,8 +22,8 @@ namespace tres {
 
 	private:
 		struct Cell {
-			void* pointer = tres::null;
-			byte size = 0;
+			byte* pointer = nullptr;
+			size_t size = 0;
 		};
 		//structure of kernel memory:
 			//----: pointer

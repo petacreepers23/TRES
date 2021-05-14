@@ -29,7 +29,7 @@ void* basic_allocator::allocate(size_t size) {
 		}
 		heap_memory_pointer += allocation_entry.size;
 	}
-	return tres::null;
+	return nullptr;
 }
 
 void basic_allocator::deallocate(void* what) {
@@ -38,7 +38,7 @@ void basic_allocator::deallocate(void* what) {
 	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
 		Cell allocation_entry = kernel_memory[i];
 		if (allocation_entry.pointer == what) {
-			allocation_entry.pointer=tres::null;
+			allocation_entry.pointer=nullptr;
 			kernel_memory[i] = allocation_entry;
 			return;
 		}
@@ -48,7 +48,7 @@ void basic_allocator::deallocate(void* what) {
 void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull) {
 	//Para reallocar, 1 necesitamos nuevo hueco donde meterlo
 	void* newplace = allocate(new_size);
-	if(newplace == tres::null){
+	if(newplace == nullptr){
 		successfull = false;
 		return what;
 	}
@@ -58,7 +58,7 @@ void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull
 	Cell allocation_entry;
 	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
 		if (allocation_entry.pointer == what) {
-			allocation_entry.pointer=tres::null;
+			allocation_entry.pointer=nullptr;
 			kernel_memory[i] = allocation_entry;
 			break;
 		}

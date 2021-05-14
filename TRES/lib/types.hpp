@@ -7,5 +7,4 @@ namespace tres {
 
 	typedef unsigned short double_byte;
 
-	void* null = 0x0;
 }

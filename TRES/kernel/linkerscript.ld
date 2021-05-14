@@ -10,21 +10,16 @@ MEMORY {
 SECTIONS {
 	/* Para ld, la dirección virtual y la dirección física por defecto
 	 * es la misma, lo que nos simplifica el trabajo. */
-	.text.start (0x10000) : {
+	.text.start (0x10000)  : ALIGN(4K){
 		./build/kernel_main.o (.text)
 	} > RAM
-	.rodata (0x10100) : {
+	.rodata (0x10100) : ALIGN(4K){
 		./build/kernel_main.o (.rodata)
 	} > RAM
-	.note.gnu.property (0x10200) : {
+	.note.gnu.property (0x10500) : {
 		./build/kernel_main.o (.note.gnu.property)
 	} > RAM
-	.functs (0x10300) : {
-		./build/kernel_functions.o (.text)
-	} > RAM
-	.functs (0x10500) : {
-		./build/pci.o (.text)
-	} > RAM
+
 	
 	
 }

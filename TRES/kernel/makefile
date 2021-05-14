@@ -1,7 +1,7 @@
-CC := g++
-LN := ld
-CCFLAGS := -std=c++17 -Wall -nostdlib -fno-exceptions -fno-rtti -c -m32 -fno-pie -fno-asynchronous-unwind-tables
-LNFLAGS := -T linkerscript.ld
+CC := i686-elf-g++
+LN := i686-elf-g++
+CCFLAGS := -std=c++17 -Wall -ffreestanding  -c  -fno-exceptions -fno-rtti
+LNFLAGS := -T linkerscript.ld -ffreestanding -nostdlib -lgcc
 
 KERNEL_NAME = KERNEL
 DEST_DIR = ./build/
@@ -28,7 +28,7 @@ compile:
 	$(CC) $(CCFLAGS) $(SOURCE_FUNC).cpp -o $(OUT_2).o
 	$(CC) $(CCFLAGS) $(DRIVER_PATH)$(SOURCE_DRIVER).cpp -o $(OUT_3).o
 	$(CC) $(CCFLAGS) $(LIB_PATH)$(SOURCE_ALLOCATOR).cpp -o $(OUT_4).o
-	$(LN) $(LNFLAGS) -o $(DEST_DIR)$(KERNEL_NAME).BIN
+	$(LN) $(LNFLAGS) -o $(DEST_DIR)$(KERNEL_NAME).BIN $(OUT_1).o $(OUT_2).o $(OUT_3).o $(OUT_4).o
 
 all: clean compile
 
