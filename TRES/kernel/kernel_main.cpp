@@ -28,13 +28,15 @@ int main() {
 	
 
 	print_pci();
-	//simple_print("hola mundo");
-	// simple_print("123456789||");
+	//simple_print("ashola mundo\n\n123456789\n||\nbuenos\n123456789\n||\nbuenos");
+	// simple_print("\nabc\n||\nfg");
+	// // simple_print("123456789\n||\nbuenos");
 	// uint64_t a = 25416584;
 	// simple_print(a);
 	// simple_print("||");
 	// int b = 5;
 	// simple_print(-999);
+	// simple_print(0);
 	// simple_print(a);
 	//printNumeric(b);
 

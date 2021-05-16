@@ -29,12 +29,10 @@ void outl(unsigned int dir, short port) {
 
 
 uint32_t get_PCI_register(int bus, int slot, int func, int reg) {
-	uint32_t dir, dat;
-	dir = (uint32_t)((bus << 16) | (slot << 11) |
-              (func << 8) | (reg & 0xfc) | ((uint32_t)0x80000000));
-	//printf("Direccion: %d",dir);
-	// print((char*)"Direccion: ", 11);
-	// printNumeric(dir);
+	uint32_t dat;
+	uint32_t enable_bit = 0x80000000;
+	uint32_t dir = (uint32_t)((bus << 16) | (slot << 11) |
+              (func << 8) | (reg & 0xfc) | enable_bit);
 
 	// lectura del registro
 	__asm__ __volatile__("outl %0,%w1":: "a"(dir), "Nd"(CONFIG_DIR));
@@ -56,10 +54,7 @@ int ls_pci(){
 
 				dat = get_PCI_register(bus,device,f,0x8);
 
-				// dir = (unsigned int)((bus << 16) | (device << 11) |
-				// 	(f << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
-				// __asm__ __volatile__("outl %0,%w1":: "a"(dir), "Nd"(CONFIG_DIR));
-				// ins(CONFIG_DAT, &dat, 2);
+
 
 
 				if (dat == 0xFFFFFFFF)
@@ -187,14 +182,14 @@ int print_regions(int bus, int slot, int func, int bridge) {
 			// 	dir_reg |= ((uint64_t) dat) << 32;
 			// }
 	 		//printf("\tRegion %d (%s): dir %lx tam %d\n", i, io ? "IO" : "Mem", dir_reg, tam);
-			simple_print("Region");
+			simple_print("Region ");
 			simple_print(i,10);
 			simple_print(io ? "(IO) " : "(Mem)");
 			simple_print(": dir");
 			simple_print(dir_reg,10);
 			simple_print(" tam ");
 			simple_print(tam,10);
-			simple_print("                          ");
+			simple_print("\n");
 			
 
 
@@ -240,20 +235,20 @@ int print_device(int bus, int slot, int func) {
 
     //printf("Bus %d Slot %d Func %d: ID Vendedor %x ID Producto %x Clase %x Subclase %x\n", bus, slot, func, vend, prod, clase, subclass);
 	simple_print("Bus ");
-	simple_print(bus,10);
+	simple_print(bus);
 	simple_print(" Slot ");
-	simple_print(slot,10);
+	simple_print(slot);
 	simple_print(" Func ");
-	simple_print(func,10);
-	simple_print(" ID Vendedor       ");
-	simple_print(vend,10);
+	simple_print(func);
+	simple_print(" ID Vendedor: ");
+	simple_print(vend);
 	simple_print(" ID Producto ");
-	simple_print(prod,10);
+	simple_print(prod);
 	simple_print(" Clase ");
-	simple_print(clase,10);
+	simple_print(clase);
 	simple_print(" Subclase ");
-	simple_print(subclass,10);
-	simple_print("                  ");
+	simple_print(subclass);
+	simple_print("\n");
 
 	// comprobando si existen PCI bridges
 	// debe leer el registro PCI que contiene el tipo de cabecera

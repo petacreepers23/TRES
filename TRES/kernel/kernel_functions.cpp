@@ -2,8 +2,13 @@
 #include "kernel_functions.hpp"
 static int dir_memoria_video = 0xB8000;
 
-static uint16_t width;
-static uint16_t lenth;
+const static uint16_t _width = 80;
+const static uint16_t _length = 0;
+static uint16_t _current_width = 0;
+static uint16_t _current_length = 0;
+static int index = 0; // TODO: fix please, this is a ñapa.
+
+
 void print(const char* msg, unsigned int size) {
 	volatile char* mem_video = (volatile char*)dir_memoria_video;
 
@@ -16,23 +21,55 @@ void print(const char* msg, unsigned int size) {
 	dir_memoria_video += size * 2 + 2;
 }
 
-void simple_print(const char* msg) {
+
+void simple_print(const char* msg, int a, int b) {
 	volatile char* mem_video = (volatile char*)dir_memoria_video;
-	int index = 0;
 	while (*msg != 0) {
 		*mem_video++ = *msg++;
 		*mem_video++ = 15;
-		index++;
+		index+=2;
+		dir_memoria_video += 2;
+		
+		index=index%160;
 	}
-	dir_memoria_video += index * 2;
+}
+
+void simple_print(const char* msg) {
+	volatile char* mem_video = (volatile char*)dir_memoria_video;
+	//simple_print(index,10);
+	int aux = 1;
+	while (*msg != 0) {
+		aux = 1;
+		if (*msg == '\n') {
+			mem_video+=(160-index);
+			dir_memoria_video+=(160-index);
+			index=2;
+			mem_video+=2;
+			dir_memoria_video+=2;
+			msg++;
+
+		} else {
+			
+			*mem_video++ = *msg++;
+			*mem_video++ = 15;
+			index+=2;
+			dir_memoria_video += 2;
+		}
+		aux = 0;
+		index=index%160;
+	}
+	//if(aux==0){	index-=2;}
+
+	//dir_memoria_video-=2;
+	//simple_print(index);
 }
 void simple_print(char msg) {
 	volatile char* mem_video = (volatile char*)dir_memoria_video;
 	*mem_video++ = msg;
 	*mem_video = 15;
-	dir_memoria_video +=2;
+	dir_memoria_video += 2;
+	index +=2;
 }
-
 
 // debería funcionar con los uints perfectamente
 void simple_print(int num, int base) {
@@ -40,32 +77,21 @@ void simple_print(int num, int base) {
 	int i = 30;
 	int sign;
 
-	if((sign = num)<0){num = -num;}
+	if ((sign = num) < 0) {
+		num = -num;
+	}
 
-	while( num!=0 && i!=0 ){
+	do {
 		buf[i] = "0123456789abcdef"[num % base];
 		i--;
 		num /= base;
-	}
-	if(sign<0){
-		buf[i]='-';
+	} while (num != 0 && i != 0);
+	if (sign < 0) {  // Si num negativo metemos el -
+		buf[i] = '-';
 		i--;
 	}
-	simple_print (&buf[i+1]);
+	simple_print(&buf[i + 1]);
 }
-// void simple_print(uint32_t num) {
-// 	static char buf[32] = {0};
-// 	int i = 30;
-// 	int sign;
-// 	while( num!=0 && i!=0 ){
-// 		buf[i] = "0123456789abcdef"[num % 10];
-// 		i--;
-// 		num /= 10;
-// 	}
-
-// 	simple_print (&buf[i+1]);
-
-// }
 
 
 /*Nums del 0-15*/
@@ -150,23 +176,6 @@ void ins(short port, T* dest, unsigned int count) {
 	             : "memory");
 }
 
-// unsigned int get_PCI_register(int bus, int slot, int func, int reg) {
-// 	unsigned int dir;
-// 	dir = (unsigned int)((bus << 16) | (slot << 11) |
-// 	                 (func << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
-// 	print((char*)"Direccion:",10);
-// 	printNumeric(dir);
-
-// 	// lectura del registro
-// 	__asm__ __volatile__ ("outl %0,%w1": :"a" (dir), "Nd" (CONFIG_DIR));
-
-// 	unsigned int * res;
-// 	unsigned int count =2;
-// 	ins(CONFIG_DAT,res,2);
-
-// 	return *res;
-
-// }
 
 void set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) {
 	unsigned int dir;
@@ -198,104 +207,6 @@ void set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) 
 // 	for (i = 0; i < num_reg; i++, PCI_register += 4) {
 // 		datorig = dat = get_PCI_register(bus, slot, func, PCI_register);
 
-// 		// no debería ocurrir
-// 		if (dat == 0xFFFFFFFF) return;
-
-// 		dir64 = 0;
-// 		// ¿IO o MMIO?
-// 		if (dat & 0x00000001) {  // IO
-// 			dir_reg = dat & 0xFFFFFFFC;
-// 			io = 1;
-// 		} else {                                 // MMIO
-// 			dir64 = (dat & 0x00000002) ? 1 : 0;  // ¿32 o 64 bits?
-// 			dir_reg = dat & 0xFFFFFFF0;
-// 			io = 0;
-// 		}
-// 		if (dir_reg) {  // tiene esa región asignada: obtener el tamaño
-// 			// escribe 0xFFFFFFFF para obtener el tamaño
-// 			set_PCI_register(bus, slot, func,
-// 			                 PCI_register, 0xFFFFFFFF);
-// 			dat = get_PCI_register(bus, slot, func, PCI_register);
-// 			// restaura el valor original
-// 			set_PCI_register(bus, slot, func, PCI_register, datorig);
-// 			dat = io ? (dat & 0xFFFFFFFC) : (dat & 0xFFFFFFF0);
-// 			// calcula el tamaño de la región
-// 			tam = 1;
-// 			while ((dat & 0x00000001) == 0) {
-// 				dat >>= 1;
-// 				tam <<= 1;
-// 			}
-// 			if (dir64) {  // obtiene la parte alta de la dirección
-// 				PCI_register += 4;
-// 				dat = get_PCI_register(bus, slot, func,
-// 				                       PCI_register);
-// 				dir_reg |= ((uint64_t)dat) << 32;
-// 			}
-// 			printf("\tRegion %d (%s): dir %lx tam %d\n", i,io ? "IO" : "Mem", dir_reg, tam);
-// 		}
-// 	}
-// }
-
-// comprueba si es de la clase buscada; en caso afirmativo, imprime
-// la información del dispositivo;
-// si no lo es pero es un brigde, comprueba recursivamente los buses
-// secundarios que se encuentra
-// void check_class(int bus, int slot, int func, int classID) {
-// 	unsigned int dat;
-// 	int PCI_register;
-// 	int vend, prod, classs, subclass;
-// 	int bridge, bus_secund;
-
-// 	// dirección de registro que contiene clase y subclase
-// 	PCI_register = 0x08;
-// 	dat = get_PCI_register(bus, slot, func, PCI_register);
-
-// 	// no hay dispositivo en este "slot"; no debería ocurrir
-// 	if (dat == 0xFFFFFFFF) return;
-
-// 	// extrae clase y subclase
-// 	classs = (dat & 0xFF000000) >> 24;
-// 	subclass = (dat & 0x00FF0000) >> 16;
-
-// 	// es de la clase buscada
-// 	if (classs == classID) {
-// 		// dirección de registro que contiene vendedor y producto
-// 		PCI_register = 0;
-// 		dat = get_PCI_register(bus, slot, func, PCI_register);
-
-// 		// no hay dispositivo en este "slot"; no debería ocurrir
-// 		if (dat == 0xFFFFFFFF) return;
-
-// 		// extrae vendedor y producto
-// 		vend = dat & 0x0000FFFF;
-// 		prod = dat >> 16;
-
-// 		//printf("Dispositivo de la clase buscada (%x):\n\tVendedor %x\n\tProducto %x\n\tsubclase %x\n\tbus %x slot %x función %x\n",class, vend, prod, subclass, bus, slot, func);
-
-// 		print_regions(bus, slot, func);
-// 	} else {
-// 		// no es de la clase buscada; comprobamos si es un PCI bridge
-// 		// debe leer el registro PCI que contiene el tipo de cabecera
-// 		PCI_register = 0xC;
-// 		dat = get_PCI_register(bus, slot, func, PCI_register);
-
-// 		// no hay dispositivo en este "slot"; no debería ocurrir
-// 		if (dat == 0xFFFFFFFF) return;
-
-// 		bridge = (dat >> 16) & 0x7f;
-
-// 		// navega por el bus asociado al PCI-PCI bridge encontrado
-// 		if (bridge) {
-// 			// obteniendo bus secundario asociado al bridge
-// 			PCI_register = 0x18;
-// 			dat = get_PCI_register(bus, slot, func, PCI_register);
-// 			if (dat == 0xFFFFFFFF) return;
-// 			bus_secund = (dat >> 8) & 0xff;
-// 			if (bus_secund)
-// 				search_device_class_in_bus(bus_secund, classID);
-// 		}
-// 	}
-// }
 // busca esa clase de dispositivo en el bus especificado;
 // se llama indirectamente de forma recursiva cuando se encuentran
 // nuevos buses
