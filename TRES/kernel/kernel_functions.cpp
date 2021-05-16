@@ -2,75 +2,107 @@
 #include "kernel_functions.hpp"
 static int dir_memoria_video = 0xB8000;
 
+static uint16_t width;
+static uint16_t lenth;
 void print(const char* msg, unsigned int size) {
 	volatile char* mem_video = (volatile char*)dir_memoria_video;
 
 	for (unsigned int i = 0; i < size; ++i) {
-		mem_video[i*2] = msg[i];
-		mem_video[i*2+1] = 15;
+		mem_video[i * 2] = msg[i];
+		mem_video[i * 2 + 1] = 15;
 	}
 	mem_video[size * 2] = ' ';
-	mem_video[size * 2 + 1]  = (char)15;
-	dir_memoria_video+=size*2 + 2;
+	mem_video[size * 2 + 1] = (char)15;
+	dir_memoria_video += size * 2 + 2;
 }
 
-
-void simple_print(const char* msg){
+void simple_print(const char* msg) {
 	volatile char* mem_video = (volatile char*)dir_memoria_video;
 	int index = 0;
-	while(*msg != 0){
-	    *mem_video++ = *msg++;
+	while (*msg != 0) {
+		*mem_video++ = *msg++;
 		*mem_video++ = 15;
 		index++;
 	}
-	dir_memoria_video += index*2;
+	dir_memoria_video += index * 2;
 }
-void simple_print(const char* msg,char a){
-	simple_print(msg);
-	if(a=='\n'){
-		simple_print("                                                                                ");
+void simple_print(char msg) {
+	volatile char* mem_video = (volatile char*)dir_memoria_video;
+	*mem_video++ = msg;
+	*mem_video = 15;
+	dir_memoria_video +=2;
+}
+
+
+// debería funcionar con los uints perfectamente
+void simple_print(int num, int base) {
+	static char buf[32] = {0};
+	int i = 30;
+	int sign;
+
+	if((sign = num)<0){num = -num;}
+
+	while( num!=0 && i!=0 ){
+		buf[i] = "0123456789abcdef"[num % base];
+		i--;
+		num /= base;
 	}
+	if(sign<0){
+		buf[i]='-';
+		i--;
+	}
+	simple_print (&buf[i+1]);
 }
+// void simple_print(uint32_t num) {
+// 	static char buf[32] = {0};
+// 	int i = 30;
+// 	int sign;
+// 	while( num!=0 && i!=0 ){
+// 		buf[i] = "0123456789abcdef"[num % 10];
+// 		i--;
+// 		num /= 10;
+// 	}
+
+// 	simple_print (&buf[i+1]);
+
+// }
 
 
 /*Nums del 0-15*/
-char auxNumeric(unsigned char num){
-  if(num>15){
-    return '-';
-  }
-  if(num>9){
-    return (num-10)+'A';
-  }else{
-    return num + '0';
-  }
+char auxNumeric(unsigned char num) {
+	if (num > 15) {
+		return '-';
+	}
+	if (num > 9) {
+		return (num - 10) + 'A';
+	} else {
+		return num + '0';
+	}
 }
 /*Nums de 32 bits*/
 void printNumeric(unsigned int num) {
-  char buffer[10];
-  buffer[0] = '0';
-  buffer[1] = 'x';
+	char buffer[10];
+	buffer[0] = '0';
+	buffer[1] = 'x';
 
-  union U {
-    int num;
-    unsigned char bytes[4];
-  } u;
-  u.num = num;
+	union U {
+		int num;
+		unsigned char bytes[4];
+	} u;
+	u.num = num;
 
-  for (int i = 0; i < 4; ++i)
-  {
-    buffer[i*2+2] = auxNumeric(015 & u.bytes[i]);
-    buffer[i*2+3] = auxNumeric((240 & u.bytes[i]) >> 4);
-  }
-  
-  print(buffer,10);
+	for (int i = 0; i < 4; ++i) {
+		buffer[i * 2 + 2] = auxNumeric(015 & u.bytes[i]);
+		buffer[i * 2 + 3] = auxNumeric((240 & u.bytes[i]) >> 4);
+	}
+
+	print(buffer, 10);
 }
 
-void stop(){
-	while(1);
+void stop() {
+	while (1)
+		;
 }
-
-
-
 
 // Cosas de la PCI
 
@@ -110,15 +142,13 @@ asm(R"(
     ret
     .cfi_endproc
 )");*/
-template<typename T>
-void ins(short port, T *dest, unsigned int count) {
-    asm volatile("rep ins%z2"
-        : "+D" (dest), "+c" (count), "=m" (*dest)
-        : "d" (port)
-        : "memory");
+template <typename T>
+void ins(short port, T* dest, unsigned int count) {
+	asm volatile("rep ins%z2"
+	             : "+D"(dest), "+c"(count), "=m"(*dest)
+	             : "d"(port)
+	             : "memory");
 }
-
-
 
 // unsigned int get_PCI_register(int bus, int slot, int func, int reg) {
 // 	unsigned int dir;
@@ -127,32 +157,32 @@ void ins(short port, T *dest, unsigned int count) {
 // 	print((char*)"Direccion:",10);
 // 	printNumeric(dir);
 
-
-
 // 	// lectura del registro
 // 	__asm__ __volatile__ ("outl %0,%w1": :"a" (dir), "Nd" (CONFIG_DIR));
-
 
 // 	unsigned int * res;
 // 	unsigned int count =2;
 // 	ins(CONFIG_DAT,res,2);
 
 // 	return *res;
-	 
-// }
 
+// }
 
 void set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) {
 	unsigned int dir;
 	dir = (unsigned int)((bus << 16) | (slot << 11) |
-	                 (func << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
+	                     (func << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
 
 	// escritura en el registro
 	//outl(dir, CONFIG_DIR);
 
-	__asm__ __volatile__ ("outl %0,%w1": :"a" (dir), "Nd" (CONFIG_DIR));
-	__asm__ __volatile__ ("outl %0,%w1": :"a" (value), "Nd" (CONFIG_DAT));
-	return ;
+	__asm__ __volatile__("outl %0,%w1"
+	                     :
+	                     : "a"(dir), "Nd"(CONFIG_DIR));
+	__asm__ __volatile__("outl %0,%w1"
+	                     :
+	                     : "a"(value), "Nd"(CONFIG_DAT));
+	return;
 }
 
 // imprime la información de regiones de direcciones (MMIO o PIO)
@@ -241,7 +271,7 @@ void set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) 
 // 		prod = dat >> 16;
 
 // 		//printf("Dispositivo de la clase buscada (%x):\n\tVendedor %x\n\tProducto %x\n\tsubclase %x\n\tbus %x slot %x función %x\n",class, vend, prod, subclass, bus, slot, func);
-		
+
 // 		print_regions(bus, slot, func);
 // 	} else {
 // 		// no es de la clase buscada; comprobamos si es un PCI bridge
@@ -283,7 +313,7 @@ void search_device_class_in_bus(int bus, int classID) {
 		// debe leer el registro PCI que contiene el tipo de cabecera
 		PCI_register = 0xC;
 		//dat = get_PCI_register(bus, slot, 0, PCI_register);
-		print("Devuelve:",10);
+		print("Devuelve:", 10);
 		printNumeric(dat);
 
 		// no hay dispositivo; paso al siguiente slot
@@ -298,6 +328,3 @@ void search_device_class_in_bus(int bus, int classID) {
 		// 	check_class(bus, slot, f, classID);
 	}
 }
-
-
-

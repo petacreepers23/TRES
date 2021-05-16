@@ -188,12 +188,12 @@ int print_regions(int bus, int slot, int func, int bridge) {
 			// }
 	 		//printf("\tRegion %d (%s): dir %lx tam %d\n", i, io ? "IO" : "Mem", dir_reg, tam);
 			simple_print("Region");
-			printNumeric(i);
+			simple_print(i,10);
 			simple_print(io ? "(IO) " : "(Mem)");
 			simple_print(": dir");
-			printNumeric(dir_reg);
+			simple_print(dir_reg,10);
 			simple_print(" tam ");
-			printNumeric(tam);
+			simple_print(tam,10);
 			simple_print("                          ");
 			
 
@@ -240,19 +240,19 @@ int print_device(int bus, int slot, int func) {
 
     //printf("Bus %d Slot %d Func %d: ID Vendedor %x ID Producto %x Clase %x Subclase %x\n", bus, slot, func, vend, prod, clase, subclass);
 	simple_print("Bus ");
-	printNumeric(bus);
+	simple_print(bus,10);
 	simple_print(" Slot ");
-	printNumeric(slot);
+	simple_print(slot,10);
 	simple_print(" Func ");
-	printNumeric(func);
+	simple_print(func,10);
 	simple_print(" ID Vendedor       ");
-	printNumeric(vend);
+	simple_print(vend,10);
 	simple_print(" ID Producto ");
-	printNumeric(prod);
+	simple_print(prod,10);
 	simple_print(" Clase ");
-	printNumeric(clase);
+	simple_print(clase,10);
 	simple_print(" Subclase ");
-	printNumeric(subclass);
+	simple_print(subclass,10);
 	simple_print("                  ");
 
 	// comprobando si existen PCI bridges

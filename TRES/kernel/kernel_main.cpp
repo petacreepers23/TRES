@@ -26,8 +26,17 @@ int main() {
     //    print((char*)"big-endian",10);
     // }
 	
-	// ls_pci();
+
 	print_pci();
+	//simple_print("hola mundo");
+	// simple_print("123456789||");
+	// uint64_t a = 25416584;
+	// simple_print(a);
+	// simple_print("||");
+	// int b = 5;
+	// simple_print(-999);
+	// simple_print(a);
+	//printNumeric(b);
 
 	// print("otro print",10);
 	// print("y otro mas",10);
