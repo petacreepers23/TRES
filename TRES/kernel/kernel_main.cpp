@@ -26,7 +26,7 @@ int main() {
     //    print((char*)"big-endian",10);
     // }
 	
-
+	simple_print(6/0);
 	print_pci();
 	//simple_print("ashola mundo\n\n123456789\n||\nbuenos\n123456789\n||\nbuenos");
 	// simple_print("\nabc\n||\nfg");
