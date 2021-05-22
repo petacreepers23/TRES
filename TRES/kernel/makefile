@@ -1,6 +1,6 @@
 CC := i686-elf-g++
 LN := i686-elf-g++
-CCFLAGS := -std=c++17 -Wall -ffreestanding  -c  -fno-exceptions -fno-rtti
+CCFLAGS := -O3 -std=c++17 -Wall -ffreestanding  -c  -fno-exceptions -fno-rtti
 LNFLAGS := -T linkerscript.ld -ffreestanding -nostdlib -lgcc 
 
 KERNEL_NAME = KERNEL
