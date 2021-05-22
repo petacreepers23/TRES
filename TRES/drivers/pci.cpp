@@ -2,7 +2,7 @@
 
 #include "pci.hpp"
 
-#include "../kernel/kernel_functions.hpp"
+
 
 // Si se lee de CONFIG_DAT se obtiene el contenido del registro PCI
 // especificado en CONFIG_DIR.
@@ -10,7 +10,6 @@
 // especificado en CONFIG_DIR.
 #define CONFIG_DIR 0xCF8
 #define CONFIG_DAT 0xCFC
-
 
 
 
@@ -30,6 +29,19 @@ void set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) 
 	outl(value,CONFIG_DAT);
 }
 
+prueba::prueba(int a , int b)
+{
+	this->a=a;
+	this->b=b;
+}
+
+prueba::~prueba()
+{
+}
+void prueba::print(){
+	simple_print(a); 
+	simple_print(b);
+}
 /*
 |    31    |(30-24) |(23-16)|(15-11)  |(10-8)     |(7-2)      |(1-0)|
 

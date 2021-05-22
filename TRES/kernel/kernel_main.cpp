@@ -1,6 +1,13 @@
-
+#pragma once
 #include "kernel_functions.hpp"
 #include "../drivers/pci.hpp"
+#include "../lib/basic_allocator.hpp"
+
+
+
+
+
+
 
 int main() {
 
@@ -45,8 +52,48 @@ int main() {
 	// simple_print("nuevo567890123456789012345678901234567890123456789012345678901234567890123456789");
 	// simple_print("ultim567890123456789012345678901234567890123456789012345678901234567890123456789");
 	// simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
-	// simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
+	//simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
 	print_pci();
+	
+
+	// prueba* p = new prueba(3,4);
+	// p->print();
+	// prueba* pp = new prueba(3,989);
+	
+	// pp->print();
+	// delete p;
+	// delete pp;
+	// pp->print();
+	// p->print();
+	// prueba* p3 = new prueba(5,6);
+	// prueba* p4 = new prueba(7,8);
+	// pp->print();
+	// p->print();
+
+
+	// prueba 3:
+	// int* array = new int[10];
+	// int* array2 = new int[10];
+    // array[5] = 9;
+	// array2[5]=98;
+	// int a = array[5];
+	// simple_print(a);
+	// simple_print(array2[5]);
+    // // Deallocate Heap memory
+    // delete[] array;
+	// // int* array3 = new int[20];
+	// // array3[6]=6;
+	// // simple_print(array3[6]);
+	// int* array4 = new int[10];
+	// array4[5]=12;
+	// simple_print(array4[5]);
+	// simple_print(array2[5]);
+
+ 
+
+	//char *str = malloc(strlen(str)+1);
+
+
 	// console_clear();
 	// simple_print("ashola mundo\n\n123456789\n||\nbuenos\n123456789\n||\nbuenos");
 	// simple_print("hola");

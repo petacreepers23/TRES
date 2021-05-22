@@ -7,7 +7,7 @@ const uint32_t x_size = 80;
 const uint32_t y_size = 25;
 static uint32_t x_current = 0;
 static uint32_t y_current = 0;
-static int index = 0;  // TODO: fix please, this is a ñapa.
+
 
 int color = 15;
 /* 
@@ -50,7 +50,7 @@ enum CONSOLE_COLORS : unsigned char { BLACK = 0,
 
 // given actual x and y position you get the correspondiente memory address
 inline uint32_t pos(uint32_t x_current, uint32_t y_current) {
-	return ((y_current * x_size) + x_current) << 1;
+	return ((y_current * x_size) + x_current) <<1;
 }
 void set_color(CONSOLE_COLORS forecolour, CONSOLE_COLORS backcolour) {
 	color = (backcolour << 4) | (forecolour & 0x0F);

@@ -1,6 +1,5 @@
 #include "basic_allocator.hpp"
-
-#include "types.hpp"
+#include "memory.hpp"
 namespace tres {
 
 /*
@@ -35,11 +34,11 @@ void* basic_allocator::allocate(size_t size) {
 void basic_allocator::deallocate(void* what) {
 	Cell* kernel_memory = (Cell*)KERNEL_MEM;
 
-	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
-		Cell allocation_entry = kernel_memory[i];
-		if (allocation_entry.pointer == what) {
-			allocation_entry.pointer=nullptr;
-			kernel_memory[i] = allocation_entry;
+	for (size_t i = 0; i < KERNEL_SIZE; i++) {
+		//Cell allocation_entry = kernel_memory[i];
+		if (kernel_memory[i].pointer == (byte*)what) {
+			kernel_memory[i].pointer = 0;
+			//kernel_memory[i] = allocation_entry;
 			return;
 		}
 	}
@@ -48,7 +47,7 @@ void basic_allocator::deallocate(void* what) {
 void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull) {
 	//Para reallocar, 1 necesitamos nuevo hueco donde meterlo
 	void* newplace = allocate(new_size);
-	if(newplace == nullptr){
+	if (newplace == nullptr) {
 		successfull = false;
 		return what;
 	}
@@ -58,7 +57,7 @@ void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull
 	Cell allocation_entry;
 	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
 		if (allocation_entry.pointer == what) {
-			allocation_entry.pointer=nullptr;
+			allocation_entry.pointer = nullptr;
 			kernel_memory[i] = allocation_entry;
 			break;
 		}
@@ -76,4 +75,26 @@ void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull
 	return newplace;
 }
 
+
+
 };  // namespace tres
+
+void* operator new(tres::size_t size) {
+	tres::basic_allocator a = tres::basic_allocator();
+	return a.allocate(size);
+}
+void* operator new[](tres::size_t size) {
+	tres::basic_allocator a = tres::basic_allocator();
+	return a.allocate(size);
+}
+
+void operator delete (void* ptr,tres::size_t size) noexcept{
+	tres::basic_allocator a = tres::basic_allocator();
+	return a.deallocate(ptr);
+	
+}
+void operator delete[] (void* ptr) noexcept{
+	tres::basic_allocator a = tres::basic_allocator();
+	return a.deallocate(ptr);
+	
+}

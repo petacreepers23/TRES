@@ -1,8 +1,12 @@
 #pragma once
 #include "types.hpp"
-#include "memory.hpp"
+
+
+
 
 namespace tres {
+
+	
 
 	//No segmented nor paginated mode allocator
 	class basic_allocator {
@@ -37,3 +41,8 @@ namespace tres {
 	};
 
 };
+
+void* operator new (tres::size_t size);
+void* operator new[](tres::size_t size);
+void operator delete (void* ptr, tres::size_t size) noexcept;
+void operator delete[] (void* ptr) noexcept;
