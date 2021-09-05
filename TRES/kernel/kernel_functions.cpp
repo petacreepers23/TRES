@@ -1,5 +1,6 @@
 
 #include "kernel_functions.hpp"
+#include "../lib/types.hpp"
 const uint32_t dir_memoria_video = 0xB8000;
 const uint32_t dir_fin_memoria_video = 0xC0000;
 
@@ -142,6 +143,10 @@ void simple_print(int num, int base) {
 	// }
 	// simple_print(&buf[i + 1]);
 }
+void simple_print(uint32_t num, int base){
+	return simple_print(itoa(num, base));
+}
+
 char* itoa(int num, int base) {
 	static char buf[32] = {0};
 	int i = 30;
@@ -160,6 +165,27 @@ char* itoa(int num, int base) {
 		buf[i] = '-';
 		i--;
 	}
+	return &buf[i + 1];
+}
+
+char* itoa(uint32_t num, int base) {
+	static char buf[32] = {0};
+	int i = 30;
+	//int sign;
+
+	// if ((sign = num) < 0) {
+	// 	num = -num;
+	// }
+
+	do {
+		buf[i] = "0123456789abcdef"[num % base];
+		i--;
+		num /= base;
+	} while (num != 0 && i != 0);
+	// if (sign < 0) {  // Si num negativo metemos el -
+	// 	buf[i] = '-';
+	// 	i--;
+	// }
 	return &buf[i + 1];
 }
 

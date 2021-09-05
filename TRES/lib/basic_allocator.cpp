@@ -12,7 +12,7 @@ Si termina las cells y no encuentra devuelve null.
 */
 void* basic_allocator::allocate(size_t size) {
 	Cell* kernel_memory = (Cell*)KERNEL_MEM;
-	byte* heap_memory_pointer = (byte*)HEAP_MEM;
+	uint32_t* heap_memory_pointer = (uint32_t*)HEAP_MEM;
 
 	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
 		Cell allocation_entry = kernel_memory[i];
@@ -31,12 +31,48 @@ void* basic_allocator::allocate(size_t size) {
 	return nullptr;
 }
 
+
+void* basic_allocator::allocate_aligned(size_t size,size_t alignment) {
+	Cell* kernel_memory = (Cell*)KERNEL_MEM;
+	uint32_t* heap_memory_pointer = (uint32_t*)HEAP_MEM;
+	size_t extra_size = 0;
+	
+	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
+		Cell allocation_entry = kernel_memory[i];
+		extra_size =((size_t) heap_memory_pointer % alignment);
+
+		if (allocation_entry.pointer == 0 && allocation_entry.size == 0  ) {  // check el puntero
+			if(extra_size==0){
+				// crear entrada alineada.
+				allocation_entry.pointer = heap_memory_pointer;
+				allocation_entry.size = size;
+				kernel_memory[i] = allocation_entry;
+				return allocation_entry.pointer;
+			}else{
+				// crear entrada useless 
+				allocation_entry.pointer = heap_memory_pointer;
+				allocation_entry.size = extra_size;
+				kernel_memory[i] = allocation_entry;
+				// crear entrada alineada.
+				heap_memory_pointer += allocation_entry.size;
+				allocation_entry.pointer = heap_memory_pointer;
+				allocation_entry.size = size;
+				kernel_memory[i+1] = allocation_entry;
+				return allocation_entry.pointer;
+			}
+
+		}
+		heap_memory_pointer += allocation_entry.size;
+	}
+	return nullptr;
+}
+
 void basic_allocator::deallocate(void* what) {
 	Cell* kernel_memory = (Cell*)KERNEL_MEM;
 
 	for (size_t i = 0; i < KERNEL_SIZE; i++) {
 		//Cell allocation_entry = kernel_memory[i];
-		if (kernel_memory[i].pointer == (byte*)what) {
+		if (kernel_memory[i].pointer == (uint32_t*)what) {
 			kernel_memory[i].pointer = 0;
 			//kernel_memory[i] = allocation_entry;
 			return;
@@ -78,6 +114,12 @@ void* basic_allocator::reallocate(void* what, size_t new_size, bool& successfull
 
 
 };  // namespace tres
+
+
+void* aligned_new(tres::size_t size,tres::size_t alignment){
+	tres::basic_allocator a = tres::basic_allocator();
+	return a.allocate_aligned(size,alignment);
+}
 
 void* operator new(tres::size_t size) {
 	tres::basic_allocator a = tres::basic_allocator();

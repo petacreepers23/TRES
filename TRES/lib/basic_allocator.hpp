@@ -1,6 +1,6 @@
 #pragma once
 #include "types.hpp"
-
+#include <stdint.h>
 
 
 
@@ -24,9 +24,12 @@ namespace tres {
 		//handles a change of size
 		void* reallocate(void* what, size_t new_size, bool& successfull);
 
+		//handles a new pointer, can return null
+		void* allocate_aligned(size_t size,size_t alignment);
+
 	private:
 		struct Cell {
-			byte* pointer = nullptr;
+			uint32_t* pointer = nullptr;
 			size_t size = 0;
 		};
 		//structure of kernel memory:
@@ -41,7 +44,7 @@ namespace tres {
 	};
 
 };
-
+void* aligned_new(tres::size_t size,tres::size_t alignment);
 void* operator new (tres::size_t size);
 void* operator new[](tres::size_t size);
 void operator delete (void* ptr, tres::size_t size) noexcept;

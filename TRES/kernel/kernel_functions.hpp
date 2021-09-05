@@ -10,9 +10,38 @@ void simple_print(const char* msg);
 void console_clear();
 void scroll();
 char* itoa(int num, int base);
+char* itoa(uint32_t num, int base);
 //void simple_print(uint32_t num);
 void simple_print(int num, int base=10);
+void simple_print(uint32_t num, int base=10);
 void WriteCharacter(unsigned char c, unsigned char forecolour, unsigned char backcolour, int x, int y);
+
+// class print
+// {
+// private:
+// 	/* data */
+// public:
+// 	print(/* args */);
+// 	~print();
+// 	void printNumeric(unsigned int num);
+// 	static void simple_print(const char* msg);
+// 	void simple_print(int num, int base=10);
+// 	void simple_print(uint32_t num, int base=10);
+// 	static void operator<<(const char* msg){
+// 		simple_print(msg);
+// 	}
+// };
+
+// print::print(/* args */)
+// {
+// }
+
+// print::~print()
+// {
+// }
+
+
+
 template <typename T>
 void ins(short port, T *dest, unsigned int count) {
 	asm volatile("rep ins%z2"
