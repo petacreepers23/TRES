@@ -11,7 +11,7 @@ SECTIONS {
 	/* Para ld, la dirección virtual y la dirección física por defecto
 	 * es la misma, lo que nos simplifica el trabajo. */
 	.text.start (0x10000)  : ALIGN(4K){
-		CMakeFiles/kernel.dir/kernel_main.cpp.obj (.text)
+		./build/kernel_main.o (.text)
 	} > RAM
 	.rodata (0x12000) : ALIGN(4K){
 		*(.rodata)

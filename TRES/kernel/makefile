@@ -1,7 +1,7 @@
 CC := i686-elf-g++
 LN := i686-elf-g++
 CCFLAGS := -O3 -std=c++17 -Wall -ffreestanding  -c  -fno-exceptions -fno-rtti
-LNFLAGS := -T linkerscript.ld -ffreestanding -nostdlib -lgcc 
+LNFLAGS := -T linkerscript_for_make.ld -ffreestanding -nostdlib -lgcc 
 
 KERNEL_NAME := KERNEL
 DEST_DIR := ./build
