@@ -23,12 +23,17 @@ class Port{
         uint8_t* buffer;
         uint8_t portNumber;
         int drive;
-        void configure();
+        void internal_memory_allocation();
         void start_command();
         void stop_command();
         int find_empty_cmd_slot();
         //bool read(uint32_t startl, uint32_t starth, uint32_t sector_count, void *buf);
+
+        /*
+        @param sectorl, sector h, sector_count-> destino/origen y numero de sectores.
+        */
         int build_and_send_command(uint32_t sectorl, uint32_t sectorh, uint32_t sector_count, void *buf, uint8_t write, uint16_t cmd_fis_command);
+        int read(uint32_t sectorl, uint32_t sectorh, uint32_t sector_count, uint16_t *buf);
 };
 
 }

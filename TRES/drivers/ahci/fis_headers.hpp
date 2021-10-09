@@ -14,7 +14,13 @@
  * 
 */
 
-/*Siguiendo la SATA Revision 3.0 */
+/*
+REFERENCE:
+	Siguiendo la SATA Revision 3.0 , 10 Transport Layer
+
+usefull links but maybe broken :
+http://www.usedsite.co.kr/pds/file/SerialATA_Revision_3_0_RC11.pdf
+*/
 enum FIS_TYPE
 {
 	FIS_TYPE_REG_H2D	= 0x27,	// Register FIS - host to device
@@ -25,10 +31,16 @@ enum FIS_TYPE
 	FIS_TYPE_BIST		= 0x58,	// BIST activate FIS - bidirectional
 	FIS_TYPE_PIO_SETUP	= 0x5F,	// PIO setup FIS - device to host
 	FIS_TYPE_DEV_BITS	= 0xA1,	// Set device bits FIS - device to host
-} ;
+	FIS_TYPE_VENDOR_SPECIFIC1 = 0xC7,
+	FIS_TYPE_VENDOR_SPECIFIC2 = 0xD4,
+} ; // SATA Revision 3.0, 10.3.1 FIS Type values.
 
 
-// HOST TO DEVICE 
+
+/*Register Host to Device FIS.
+transfer the content of the shadow register block (host to device)
+
+*/
 struct FIS_Register_host_to_device {
 	// DWORD 0
 	uint8_t fis_type;  // FIS_TYPE_REG_H2D
@@ -36,6 +48,11 @@ struct FIS_Register_host_to_device {
 	uint8_t pmport : 4;  // Port multiplier
 	uint8_t rsv0 : 3;    // Reserved
 	uint8_t c : 1;       // 1: Command, 0: Control
+    /* c bit.
+	1 -> update of the command register.
+	0 -> update of the device control register.
+	Undefined-> to put to 1 and SRST bit to 1. 
+	*/
 
 	uint8_t command;   // Command register
 	uint8_t featurel;  // Feature register, 7:0

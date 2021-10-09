@@ -129,11 +129,20 @@ void AHCI::configure_ports(){
 	{
 		//Port* port = ports[i];
 		simple_print("\n");
-		simple_print("configure port: ");
+		simple_print("confisgure port: ");
 		simple_print(type_of_attached_device[ports[i]->portType]);
 		simple_print("\n");
-		ports[i]->configure();
+		ports[i]->internal_memory_allocation();
 		simple_print("SATA inicializado.\n");
+		// Prueba simple.  WRITE DATA
+		const char * buffer_probe_1 = "elmiedomatalamenteelmiedomatalamenteelmiedomatalamenteelmiedomatalamenteelmiedomatalamenteelmiedomatalamente";
+		char buffer_read [200];
+		
+		ports[i]->build_and_send_command(0,0,4,buffer_read,0,0x25);
+		simple_print(buffer_read);
+		simple_print("fin\n");
+		
+		
 	}
 	
 }

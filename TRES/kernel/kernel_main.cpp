@@ -1,5 +1,5 @@
 #include "kernel_functions.hpp"
-#include "../drivers/pci.hpp"
+#include "pci.hpp"
 #include "../lib/basic_allocator.hpp"
 
 
@@ -54,14 +54,12 @@ int main() {
 	//simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
 	//print_pci();
 	simple_print("Inicio\n");
-	configure_pci_devices();
+	pci* pci_driver = new pci();
+	pci_driver->configure_pci_devices();
+	//configure_pci_devices();
 	
 
-	prueba* p = new prueba(3,4);
-	p->print();
-	prueba* pp = new prueba(3,989);
-	
-	pp->print();
+
 	// delete p;
 	// delete pp;
 	// pp->print();

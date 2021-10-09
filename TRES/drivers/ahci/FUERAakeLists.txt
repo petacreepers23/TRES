@@ -1,2 +1,0 @@
-add_library(ahci STATIC ahci.cpp port.cpp fis_headers.hpp hba_headers.hpp constants.hpp)
-target_include_directories(ahci PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
