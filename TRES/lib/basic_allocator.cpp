@@ -1,5 +1,6 @@
 #include "basic_allocator.hpp"
 #include "memory.hpp"
+#include "../kernel/kernel_functions.hpp"
 namespace tres {
 
 /*
@@ -11,8 +12,10 @@ en cuyo caso si nuestra peticion coincide con su size también nso vale.
 Si termina las cells y no encuentra devuelve null.
 */
 void* basic_allocator::allocate(size_t size) {
+	size = size+(8-(size%8));
 	Cell* kernel_memory = (Cell*)KERNEL_MEM;
 	uint32_t* heap_memory_pointer = (uint32_t*)HEAP_MEM;
+	//simple_print(" allocate ");
 
 	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
 		Cell allocation_entry = kernel_memory[i];
@@ -21,27 +24,46 @@ void* basic_allocator::allocate(size_t size) {
 
 			if (allocation_entry.size == 0 || allocation_entry.size == size) {  // check size.
 				allocation_entry.pointer = heap_memory_pointer;
+				// simple_print("dentro");
+				// simple_print((uint32_t)heap_memory_pointer);
 				allocation_entry.size = size;
 				kernel_memory[i] = allocation_entry;
 				return allocation_entry.pointer;
 			}
 		}
-		heap_memory_pointer += allocation_entry.size;
+		// simple_print("antes");
+		// simple_print((uint32_t)heap_memory_pointer);
+		// simple_print(" mas ");
+		// simple_print(allocation_entry.size);
+		heap_memory_pointer = (uint32_t*)((uint32_t)heap_memory_pointer + allocation_entry.size);
+		// simple_print("despues");
+		// simple_print((uint32_t)heap_memory_pointer);
+
 	}
 	return nullptr;
 }
 
 
-void* basic_allocator::allocate_aligned(size_t size,size_t alignment) {
+void* basic_allocator::allocate_aligned(size_t size, uint32_t alignment) {
+	//simple_print(" allocate_aligned ");
+	size = size+(8-(size%8));
 	Cell* kernel_memory = (Cell*)KERNEL_MEM;
 	uint32_t* heap_memory_pointer = (uint32_t*)HEAP_MEM;
 	size_t extra_size = 0;
 	
 	for (size_t i = 0; i < KERNEL_SIZE; i += 1) {
 		Cell allocation_entry = kernel_memory[i];
-		extra_size =((size_t) heap_memory_pointer % alignment);
+		extra_size =alignment - ((uint32_t) heap_memory_pointer % alignment);
 
 		if (allocation_entry.pointer == 0 && allocation_entry.size == 0  ) {  // check el puntero
+		// simple_print("AligEntrada: ");
+		// //simple_print(extra_size);
+		// simple_print((uint32_t)heap_memory_pointer);
+		// simple_print(" mod ");
+		// simple_print(alignment);
+		// simple_print(" = ");
+		// simple_print(extra_size);
+
 			if(extra_size==0){
 				// crear entrada alineada.
 				allocation_entry.pointer = heap_memory_pointer;
@@ -54,7 +76,7 @@ void* basic_allocator::allocate_aligned(size_t size,size_t alignment) {
 				allocation_entry.size = extra_size;
 				kernel_memory[i] = allocation_entry;
 				// crear entrada alineada.
-				heap_memory_pointer += allocation_entry.size;
+				heap_memory_pointer = (uint32_t*)((uint32_t)heap_memory_pointer + allocation_entry.size);
 				allocation_entry.pointer = heap_memory_pointer;
 				allocation_entry.size = size;
 				kernel_memory[i+1] = allocation_entry;
@@ -62,7 +84,7 @@ void* basic_allocator::allocate_aligned(size_t size,size_t alignment) {
 			}
 
 		}
-		heap_memory_pointer += allocation_entry.size;
+		heap_memory_pointer = (uint32_t*)((uint32_t)heap_memory_pointer + allocation_entry.size);
 	}
 	return nullptr;
 }

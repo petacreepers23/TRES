@@ -15,6 +15,16 @@ namespace tres {
 	There are different types of FIS, depending on the host-device relation. */
 
 
+
+	void ahci_version::set_version(uint32_t version){
+		major =  (uint16_t) (version >> 16);
+		minor =  (uint16_t) version;
+	}
+	void ahci_version::print(){
+		simple_print(major);
+		simple_print(".");
+		simple_print(minor);
+	}
 /** METODOS DE LA CLASE AHCI.*/
 
 /*
@@ -41,6 +51,7 @@ bool check_status_ok(HBA_Port* port) {
 	simple_print(" ipm: ");
 	simple_print(ipm);
 	if (det != 0x3 || ipm != 1) {
+		simple_print(" false\n");
 		return false;
 	}
 	
@@ -75,6 +86,17 @@ ATTACHED_DEVICE_TYPE get_port_attached_device(HBA_Port* port) {
 }
 
 
+AHCI::AHCI(PCI_header_type_0x00* pci_header) {
+	this->pci_header = pci_header;
+	// en bar[5] se encuentra la direccion correspondiente al registro
+	// HBA memory.
+	simple_print("Configando la AHCI...\n");
+	//HBA_Memory *abar = new HBA_Memory();
+	abar = (HBA_Memory*)pci_header->bar[5];
+	
+}
+
+
 /*La especificacion de la AHCI, nos indica que en el 
 port implemented register o HBA_MEM.pi. Es un reg de 32 bits, donde 
 cada bit si esta a 1, nos indica que esta unido a un dispositivo.
@@ -86,7 +108,7 @@ Existen 4 posibles tipos de SATA. El registro port signature register
 contiene la firma del dispositivo.
 */
 
-void AHCI::scan_ports(HBA_Memory* abar) {
+void AHCI::scan_ports() {
 	/**cada bit representa un port. 
 		 * si 1 -> tiene dispositivo atacheado.
 		 * si 0 -> no lo tiene.
@@ -95,51 +117,71 @@ void AHCI::scan_ports(HBA_Memory* abar) {
 	const uint32_t num_max_ports = 32;  // abar->cap.np+1;// CAP.NP, Number of ports. bits del 4-0.
 	simple_print("\nPI: ");
 	simple_print(pi);
+	simple_print("Scan ports \n");
 	// loop 32 ports and check bit.
 
 	portCount = 0;
 	for (uint32_t i = 0; i < num_max_ports; i++) {
 		if (pi & (1 << i)) {
+			simple_print("nPort:  ");
+			simple_print(i);
 			// check type.
 			if (check_status_ok(&abar->port[i]) == false) {
 				continue;
 			}
-			simple_print("\nPort attached: ");
+			simple_print("-> Port attached: ");
 			ATTACHED_DEVICE_TYPE attached_device_type = get_port_attached_device(&abar->port[i]);
 			simple_print(type_of_attached_device[attached_device_type]);
-			simple_print(" \n");
 			// dir = 100h+i*80h
 			// configure ports
 			if(attached_device_type==ATTACHED_DEVICE_TYPE::SATA){
+				simple_print(" new port");
 				ports[portCount] = new Port();
 				ports[portCount]->portType = attached_device_type;
 				ports[portCount]->hba_port = &abar->port[i];
 				ports[portCount]->portNumber = portCount;
 				portCount++;
 			}
+			simple_print(" \n");
 
 			
 
 		}
 	}
 }
+
+
+
 void AHCI::configure_ports(){
 
 	for (uint32_t i = 0; i < portCount; i++)
 	{
 		//Port* port = ports[i];
-		simple_print("\n");
-		simple_print("confisgure port: ");
+		//simple_print(ports[i]->hba_port->sig);
+		simple_print(" \n");
+		simple_print("configure port: ");
 		simple_print(type_of_attached_device[ports[i]->portType]);
 		simple_print("\n");
 		ports[i]->internal_memory_allocation();
 		simple_print("SATA inicializado.\n");
+		ports[i]->hba_port->cmd|= 0x10;
+		ports[i]->hba_port->cmd|= 0x1;
+		ports[i]->hba_port->serr = 0x07ef0f03;
+
 		// Prueba simple.  WRITE DATA
-		const char * buffer_probe_1 = "elmiedomatalamenteelmiedomatalamenteelmiedomatalamenteelmiedomatalamenteelmiedomatalamenteelmiedomatalamente";
-		char buffer_read [200];
+		char * buffer_read = (char*) aligned_new(1024,1024);
+		//simple_print((uint32_t)buffer_read);
+		memset(buffer_read, 0, 1024);
 		
-		ports[i]->build_and_send_command(0,0,4,buffer_read,0,0x25);
+		int res = ports[i]->read(0,0,4,buffer_read);
+		if(res==1){
+			simple_print("todo bien:");
+		}
+		// for (int t = 0; t < 1024; t++){
+        //         simple_print(buffer_read[t]);
+		// }
 		simple_print(buffer_read);
+		simple_print((uint32_t)buffer_read);
 		simple_print("fin\n");
 		
 		
@@ -147,21 +189,50 @@ void AHCI::configure_ports(){
 	
 }
 
-AHCI::AHCI(PCI_header_type_0x00* pci_header) {
-	this->pci_header = pci_header;
-	// en bar[5] se encuentra la direccion correspondiente al registro
-	// HBA memory.
-	simple_print("Configando la AHCI...\n");
-	//HBA_Memory *abar = new HBA_Memory();
-	abar = (HBA_Memory*)pci_header->bar[5];
-	
-}
+
 
 AHCI::~AHCI() {
 }
 
+void AHCI::print_hba_capabilities(){
+	if(abar->cap & constants::HBA_Capabilities::SAM){
+		simple_print("AHCI mode only\n");
+	}
+	if(abar->cap & constants::HBA_Capabilities::SSS)
+	{
+		simple_print("CAP.SSS is set.\n");
+	}else
+	{
+		simple_print("CAP.SSS not set");
+	}
+	
+}
+
+bool AHCI::is_ahci_enabled(){
+	return abar->ghc & (1 << 31);
+}
+bool AHCI::is_ahci_interrupt_enable(){
+	return abar->ghc & (1 << 1);
+}
+
+
 void AHCI::init() {
-	scan_ports(abar);
+	if(is_ahci_enabled()){
+		simple_print("AHCI habilitada.\n");
+	}
+	if(is_ahci_interrupt_enable()){
+		simple_print("AHCI interrupt enable.\n");
+	}else{
+		
+		abar->ghc |= 1 << 1;
+		if(is_ahci_interrupt_enable()){
+			simple_print("AHCI interrupt enable aja.\n");
+		}
+	}
+	version.set_version(abar->vs);
+	version.print();
+	print_hba_capabilities();
+	scan_ports();
 	configure_ports();
 }
 void AHCI::finish() {

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "types.hpp"
 void print(const char *,unsigned int);
 void stop();
 
@@ -15,6 +16,8 @@ char* itoa(uint32_t num, int base);
 void simple_print(int num, int base=10);
 void simple_print(uint32_t num, int base=10);
 void WriteCharacter(unsigned char c, unsigned char forecolour, unsigned char backcolour, int x, int y);
+void* memset(void* ptr, int value, tres::size_t num);
+void * memcpy ( void * destination, const void * source, tres::size_t num );
 
 // class print
 // {

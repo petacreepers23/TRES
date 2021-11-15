@@ -44,7 +44,7 @@ namespace tres {
 	};
 
 };
-void* aligned_new(tres::size_t size,tres::size_t alignment);
+void* aligned_new(tres::size_t size,uint32_t alignment);
 void* operator new (tres::size_t size);
 void* operator new[](tres::size_t size);
 void operator delete (void* ptr, tres::size_t size) noexcept;

@@ -11,7 +11,7 @@
 int main() {
 
 
-	// WriteCharacter('a',3,3,0,0);
+	
 	// WriteCharacter('a',3,3,1,0);
 	// WriteCharacter('a',3,7,2,0);
 	// int a = 0x12345678;
@@ -51,12 +51,43 @@ int main() {
 	// simple_print("nuevo567890123456789012345678901234567890123456789012345678901234567890123456789");
 	// simple_print("ultim567890123456789012345678901234567890123456789012345678901234567890123456789");
 	// simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
-	//simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
-	//print_pci();
-	simple_print("Inicio\n");
+	// simple_print("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
+	// //print_pci();
+	// simple_print("Inicio123\n");
+	// simple_print("Inicio:\n");
+
+	
+	char * msg = new char[80];
+    memset(msg, '8', 80);
+	simple_print((uint32_t)msg);
+	// if(msg[78]=='1'){
+	// 	simple_print("AJAJ");
+	// }
+	// msg[79]=0;
+	// char * msg1 = new char[999];
+	// memset(msg1, '8', 999);
+
+	// char * msg2 = (char*) aligned_new(1000,256);
+	// memset(msg2, '7', 1000);
+
+	// //simple_print(msg);
+	// simple_print("Fin.\n");
+	// uint32_t a = 999999;
+	
+	// uint32_t c = 999999;
+	// while(a==0){
+	// 	a--;
+	// 	uint32_t b = 999999;
+	// 	while(b==0){
+	// 		b--;
+	// 		uint32_t c = 999999;
+	// 		while(c==0){
+	// 			c--;
+	// 		}
+	// 	}
+	// }
 	pci* pci_driver = new pci();
 	pci_driver->configure_pci_devices();
-	//configure_pci_devices();
 	
 
 

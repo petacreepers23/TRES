@@ -27,14 +27,15 @@ int pci::configure_slot(const uint32_t bus, const uint32_t slot) {
 	// debe leer el registro PCI que contiene el tipo de cabecera
 	PCI_register = 0xC;
 	dat = get_PCI_register(bus, slot, 0, PCI_register);
-	if (dat == 0xFFFFFFFF)
+	if (dat == 0xFFFFFFFF){
 		return 1;
+	}
 
 	// ¿es multifunción?
 	numfun = ((dat >> 16) & multifuncion) ? 8 : 1;
 
 	for (int function = 0; function < numfun; function++) {
-		//PCI_common_part_header *general_header = new PCI_common_part_header();
+		//simple_print("new pci header");
 		PCI_header * pci_header = new PCI_header();
 		if(get_header_info(pci_header,bus,slot,function)==-1){
 			continue;
@@ -53,9 +54,9 @@ int pci::configure_slot(const uint32_t bus, const uint32_t slot) {
  * Sets  the value in a PCI register. 
 */
 void pci::set_PCI_register(int bus, int slot, int func, int reg, unsigned int value) {
-	unsigned int dir;
-	dir = (unsigned int)((bus << 16) | (slot << 11) |
-	                     (func << 8) | (reg & 0xfc) | ((unsigned int)0x80000000));
+	uint32_t enable_bit = 0x80000000;
+	uint32_t dir = (unsigned int)((bus << 16) | (slot << 11) |
+	                     (func << 8) | (reg & 0xfc) | enable_bit);
 	outl(dir, CONFIG_DIR);
 	outl(value, CONFIG_DAT);
 }
@@ -72,6 +73,7 @@ uint32_t pci::get_PCI_register(int bus, int slot, int func, int reg) {
 	                          (func << 8) | (reg & 0xfc) | enable_bit);
 	outl(dir, CONFIG_DIR);  // lectura del registro
 	ins(CONFIG_DAT, &dat, 2);
+	simple_print("");// TODO: find real sol
 	return dat;
 }
 
@@ -103,7 +105,6 @@ void pci::make_pci_device(PCI_header *pci_header) {
 	//simple_print(pci_header->class_code);
 	if (pci_header->class_code == 1) {
 		if (pci_header->subclass == 6) {
-			//PCI_header_type_0x00 *ahci_header = new PCI_header_type_0x00();
 			PCI_header_type_0x00 *ahci_header = (PCI_header_type_0x00*)pci_header;
 			tres::AHCI* ahci_configuration = new tres::AHCI(ahci_header);
 			ahci_configuration->init();

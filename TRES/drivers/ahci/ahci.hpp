@@ -11,21 +11,34 @@
 
 namespace tres{
 
+	struct ahci_version{
+		void set_version(uint32_t version);
+		uint16_t major;
+		uint16_t minor;
+		void print();
+	};
 
 
 
 
 
 
-
-	class AHCI : public drivers::driver_base {
+	class AHCI  {
 	private:
 		/* data */
 		PCI_header_type_0x00* pci_header;
 	public:
 		AHCI(PCI_header_type_0x00* pci_header);
 		~AHCI();
-		void scan_ports(HBA_Memory *abar);
+		void scan_ports();
+		void init();
+		void write_to_device(void* address, byte* buf, size_t n);
+		void finish();
+		void read_from_device(void* address, byte* buf, size_t n);
+		void configure_ports();
+		bool is_ahci_enabled();
+		bool is_ahci_interrupt_enable();
+		void print_hba_capabilities();
 		/*
 		A traves de abar se puede acceder a los registros de memoria de la HBA acceciendo tanto a las estructuras
 		Generic Host Control como Port Registers
@@ -34,13 +47,9 @@ namespace tres{
 		/*Has a pointer to the ports that are activated in other case */
 		Port* ports[32];
 		uint32_t portCount;
-		
-		void init();
-		void write_to_device(void* address, byte* buf, size_t n);
-		void finish();
-		void read_from_device(void* address, byte* buf, size_t n);
-		void configure_ports();
+		ahci_version version;
 	};
+	
 
 
 /*

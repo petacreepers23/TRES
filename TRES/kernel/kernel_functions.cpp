@@ -243,3 +243,21 @@ void stop() {
 // TODO:
 void set_cursor_pos(unsigned short position) {
 }
+
+
+void* memset(void* ptr, int value, tres::size_t num) {
+    unsigned char* p = (unsigned char*)ptr;
+    for (tres::size_t i = 0; i < num; i++) {
+        p[i] = (unsigned char)value;
+    }
+    return ptr;
+}
+
+void * memcpy ( void * destination, const void * source, tres::size_t num ){
+    unsigned char* p = (unsigned char*)source;
+    unsigned char* d = (unsigned char*)destination;
+    for(tres::size_t i = 0; i < num; i++) {
+        d[i] = p[i];
+    }
+    return destination;
+}

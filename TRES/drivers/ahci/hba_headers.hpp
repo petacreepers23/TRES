@@ -69,10 +69,10 @@ struct HBA_Memory
 	uint32_t bohc;		// 0x28, BIOS/OS handoff control and status
  
 	// 0x2C - 0x9F, Reserved
-	uint8_t  rsv [0xA0-0x2C];
+	uint8_t  rsv [0x74];//[0xA0-0x2C];
  
 	// 0xA0 - 0xFF, Vendor specific registers
-	uint8_t  vendor[0x100-0xA0];
+	uint8_t  vendo[0x60];//[0x100-0xA0];
   
 	// 0x100 - 0x10FF, Port control registers
 	HBA_Port port[32];	// 1 ~ 32
