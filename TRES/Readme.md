@@ -24,3 +24,13 @@ Carpetas:
 ​		Codigo fuente del kernel y carpeta donde se generan los arhcivos intermedios de la compilacion de cpp.
 
 ​		Tb hay un makefile para esta parte especifica.
+
+Execute: To execute TRES, there are two options, in docker or in local.
+
+Compile:
+	Docker:
+	./build_docker.sh
+	Local:
+	./build.sh
+Execute
+	sudo qemu-system-i386 -machine q35 disco.img -drive file=newdrive.img

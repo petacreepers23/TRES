@@ -1,0 +1,68 @@
+FROM ubuntu:20.04
+RUN DEBIAN_FRONTEND="noninteractive"
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+
+RUN apt-get update
+RUN apt install -y build-essential cmake
+RUN apt install -y git
+RUN apt install wget
+
+# Cross compiler
+RUN apt-get install binutils -y
+RUN apt-get install flex -y
+RUN apt-get install libgmp3-dev -y
+RUN apt-get install libmpc-dev -y
+RUN apt-get install libmpfr-dev  -y
+RUN apt install nasm -y
+RUN apt-get install texinfo -y
+RUN apt-get install gcc-multilib -y
+# for then execute the script
+RUN apt install sudo -y
+
+# Build the Cross Compiler
+ENV PREFIX="/usr/local/cross"
+ENV TARGET=i686-elf
+ENV PATH="$PREFIX/bin:$PATH"
+
+RUN mkdir -p src/build-isl /src/build-binutils /src/build-gcc
+WORKDIR /src
+
+# Version
+
+# Download and install isl
+RUN wget -c https://libisl.sourceforge.io/isl-0.18.tar.xz
+RUN tar -xvf isl-0.18.tar.xz
+WORKDIR /src/build-isl
+RUN ../isl-0.18/configure
+RUN make
+RUN make install
+
+# Download binutils and gcc 
+WORKDIR /src
+
+RUN wget -c https://ftp.gnu.org/gnu/binutils/binutils-2.36.tar.xz
+RUN tar -xvf binutils-2.36.tar.xz
+
+RUN wget -c https://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz
+RUN tar -xvf gcc-8.2.0.tar.xz
+
+# Build Binutils
+WORKDIR /src/build-binutils
+RUN ../binutils-2.36/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
+RUN make
+RUN make install
+
+# Build gcc
+WORKDIR /src/build-gcc
+
+RUN cp /usr/local/lib/libisl*   /usr/lib
+RUN ../gcc-8.2.0/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers
+RUN make all-gcc 
+RUN make all-target-libgcc
+RUN make install-gcc
+RUN make install-target-libgcc
+
+RUN export PATH="$HOME/opt/cross/bin:$PATH"
+
+

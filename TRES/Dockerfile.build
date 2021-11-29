@@ -1,0 +1,7 @@
+FROM tres_environment:latest
+# RUN apt install qemu-system-x86-64 -y
+COPY . /tmp
+WORKDIR /tmp
+
+# RUN ./build.sh ;  sudo qemu-system-i386 -machine q35 disco.img -drive file=newdrive.img
+ENTRYPOINT [ "/bin/bash" ]
